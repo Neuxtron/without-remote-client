@@ -19,8 +19,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _socketService.context = context;
-    _socketService.connect();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _socketService.context = context;
+      _socketService.connect();
+    });
   }
 
   @override
