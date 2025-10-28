@@ -11,7 +11,7 @@ class RemoteGesturesPage extends StatefulWidget {
 }
 
 class _RemoteGesturesPageState extends State<RemoteGesturesPage> {
-  double get _swipeThreshold => 75;
+  double get _swipeThreshold => 50;
 
   double _brightness = 1.0;
   bool _useMedia = true;
