@@ -49,4 +49,12 @@ class SocketService {
   void arrowFastRight() {
     socket.volatile.emit("arrow_fast_right");
   }
+
+  void pausePlay() {
+    socket.volatile.emit("pause_play");
+  }
+
+  void space() {
+    socket.volatile.emit("space");
+  }
 }
