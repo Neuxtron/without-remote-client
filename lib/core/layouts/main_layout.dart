@@ -62,7 +62,7 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
           index: _currentIndex,
           children: [
             const HomePage(),
-            const PhoneMediaPage(),
+            PhoneMediaPage(),
           ],
         ),
       ),

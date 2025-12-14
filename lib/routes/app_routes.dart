@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:without_remote_client/core/layouts/main_layout.dart';
-import 'package:without_remote_client/features/remote_gestures/remote_gestures_page.dart';
+import 'package:without_remote_client/features/remote_gestures/views/remote_gestures_page.dart';
 
 class AppRoutes {
   static String main = "/";
@@ -11,7 +11,7 @@ class AppRoutes {
     remoteGestures: (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      return RemoteGesturesPage(socketService: args["socketService"]);
+      return RemoteGesturesPage(actions: args["actions"]);
     },
   };
 }

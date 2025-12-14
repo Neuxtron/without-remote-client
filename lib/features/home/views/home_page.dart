@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:without_remote_client/core/services/socket_service.dart';
 import 'package:without_remote_client/core/themes/app_colors.dart';
 import 'package:without_remote_client/core/utils/app_constants.dart';
+import 'package:without_remote_client/features/remote_gestures/models/gesture_action.dart';
+import 'package:without_remote_client/features/remote_gestures/models/gesture_type.dart';
 import 'package:without_remote_client/routes/app_routes.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,6 +17,33 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _socketService = SocketService();
+
+  void _startGestures() {
+    Navigator.pushNamed(
+      context,
+      AppRoutes.remoteGestures,
+      // TODO: media controls
+      arguments: {
+        "actions": <GestureType, GestureAction>{
+          GestureType.swipeLeft: GestureAction(
+            onUpdate: _socketService.arrowLeft,
+          ),
+          GestureType.swipeRight: GestureAction(
+            onUpdate: _socketService.arrowRight,
+          ),
+          GestureType.swipeUp: GestureAction(
+            onUpdate: _socketService.arrowUp,
+          ),
+          GestureType.swipeDown: GestureAction(
+            onUpdate: _socketService.arrowDown,
+          ),
+          GestureType.doubleTap: GestureAction(
+            onUpdate: _socketService.space,
+          ),
+        },
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -142,13 +171,7 @@ class _HomePageState extends State<HomePage> {
             child: const Text("[___]"),
           ),
           TextButton(
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                AppRoutes.remoteGestures,
-                arguments: {"socketService": _socketService},
-              );
-            },
+            onPressed: _startGestures,
             child: const Text("Start remote gestures"),
           ),
         ],
