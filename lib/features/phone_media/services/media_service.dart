@@ -33,13 +33,11 @@ class MediaService {
 
   void playNext() {
     _runOnReady(() async {
-      print("NEXT");
       await _channel.invokeMethod('next');
     });
   }
 
   void playPrevious() {
-    print("BACK");
     _runOnReady(() async {
       await _channel.invokeMethod('previous');
     });

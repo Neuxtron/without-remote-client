@@ -14,13 +14,14 @@ class WithoutRemoteApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Without Remote Client",
+      // TODO: theme
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primary,
         ),
+        scaffoldBackgroundColor: Colors.white,
       ),
-      // TODO: theme
       initialRoute: "/",
       routes: AppRoutes.routes,
     );

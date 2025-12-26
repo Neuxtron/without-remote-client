@@ -22,7 +22,6 @@ class _HomePageState extends State<HomePage> {
     Navigator.pushNamed(
       context,
       AppRoutes.remoteGestures,
-      // TODO: media controls
       arguments: {
         "actions": <GestureType, GestureAction>{
           GestureType.swipeLeft: GestureAction(
@@ -58,7 +57,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     const iconSize = 35.0;
 
-    // IDEA: ping display
     return Scaffold(
       appBar: AppBar(
         actions: [
