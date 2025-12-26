@@ -37,14 +37,15 @@ class PhoneMediaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () => _startGestures(context),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
+    return GestureDetector(
+      onDoubleTap: () => _startGestures(context),
+      child: Container(
+        color: Colors.white,
+        alignment: Alignment.center,
+        child: const Text(
+          "Double tap to start gestures",
+          style: TextStyle(color: Colors.grey),
         ),
-        child: const Text("Start Gestures"),
       ),
     );
   }

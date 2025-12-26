@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 class MediaService {
+  // OPTIMIZE: store volume in a global variable
   double get _updateAmount => .05;
   static const _channel = MethodChannel('media_control');
 
