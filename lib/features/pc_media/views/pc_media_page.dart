@@ -55,6 +55,15 @@ class _PcMediaPageState extends State<PcMediaPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _socketService.context = context;
+      _socketService.connect();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     // IDEA: ping display
     return Scaffold(
