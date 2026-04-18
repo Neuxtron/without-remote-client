@@ -1,1 +1,8 @@
-enum GestureType { swipeLeft, swipeRight, swipeUp, swipeDown, doubleTap }
+enum GestureType {
+  swipeLeft,
+  swipeRight,
+  swipeUp,
+  swipeDown,
+  doubleTap,
+  longPress,
+}

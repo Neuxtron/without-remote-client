@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
+import 'package:without_remote_client/features/pc_media/view_models/pc_media_view_model.dart';
 import 'package:without_remote_client/features/pc_media/views/pc_media_page.dart';
 import 'package:without_remote_client/features/phone_media/views/phone_media_page.dart';
 
@@ -61,7 +63,10 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
         child: IndexedStack(
           index: _currentIndex,
           children: [
-            const PcMediaPage(),
+            ChangeNotifierProvider(
+              create: (context) => PcMediaViewModel(),
+              child: const PcMediaPage(),
+            ),
             const PhoneMediaPage(),
           ],
         ),

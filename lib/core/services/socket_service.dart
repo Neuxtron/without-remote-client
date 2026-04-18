@@ -41,43 +41,11 @@ class SocketService {
     socket.disconnect();
   }
 
-  void volUp() {
-    socket.volatile.emit("vol_up");
+  VoidCallback onEmit(String emitKey) {
+    return () => emit(emitKey);
   }
 
-  void volDown() {
-    socket.volatile.emit("vol_down");
-  }
-
-  void arrowUp() {
-    socket.volatile.emit("arrow_up");
-  }
-
-  void arrowDown() {
-    socket.volatile.emit("arrow_down");
-  }
-
-  void arrowLeft() {
-    socket.volatile.emit("arrow_left");
-  }
-
-  void arrowFastLeft() {
-    socket.volatile.emit("arrow_fast_left");
-  }
-
-  void arrowRight() {
-    socket.volatile.emit("arrow_right");
-  }
-
-  void arrowFastRight() {
-    socket.volatile.emit("arrow_fast_right");
-  }
-
-  void pausePlay() {
-    socket.volatile.emit("play_pause");
-  }
-
-  void space() {
-    socket.volatile.emit("space");
+  void emit(String emitKey) {
+    socket.volatile.emit(emitKey);
   }
 }

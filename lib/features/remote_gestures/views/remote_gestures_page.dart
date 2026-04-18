@@ -18,41 +18,12 @@ class _RemoteGesturesPageState extends State<RemoteGesturesPage> {
   Offset _startPosition = Offset.zero;
   Offset _endPosition = Offset.zero;
 
-  void _onSwipeLeft() {
-    widget.actions[GestureType.swipeLeft]?.onUpdate?.call();
+  void _handleUpdateGesture(GestureType type) {
+    widget.actions[type]?.onUpdate?.call();
   }
 
-  void _onSwipeLeftEnd() {
-    widget.actions[GestureType.swipeLeft]?.onEnd?.call();
-  }
-
-  void _onSwipeRight() {
-    widget.actions[GestureType.swipeRight]?.onUpdate?.call();
-  }
-
-  void _onSwipeRightEnd() {
-    widget.actions[GestureType.swipeRight]?.onEnd?.call();
-  }
-
-  void _onSwipeUp() {
-    widget.actions[GestureType.swipeUp]?.onUpdate?.call();
-  }
-
-  void _onSwipeUpEnd() {
-    widget.actions[GestureType.swipeUp]?.onEnd?.call();
-  }
-
-  void _onSwipeDown() {
-    widget.actions[GestureType.swipeDown]?.onUpdate?.call();
-  }
-
-  void _onSwipeDownEnd() {
-    widget.actions[GestureType.swipeDown]?.onEnd?.call();
-  }
-
-  void _onDoubleTap() {
-    widget.actions[GestureType.doubleTap]?.onUpdate?.call();
-    widget.actions[GestureType.doubleTap]?.onEnd?.call();
+  void _handleEndGesture(GestureType type) {
+    widget.actions[type]?.onEnd?.call();
   }
 
   Future<void> _loadBrightness() async {
@@ -82,6 +53,7 @@ class _RemoteGesturesPageState extends State<RemoteGesturesPage> {
         foregroundColor: Colors.white,
         elevation: 0,
       ),
+
       // TODO: media controls
       // Row(
       //   children: [
@@ -98,7 +70,8 @@ class _RemoteGesturesPageState extends State<RemoteGesturesPage> {
       //   ],
       // ),
       body: GestureDetector(
-        // Up / Down gesture (Volume)
+        //
+        //-----------/ Up / Down gesture /-----------//
         onVerticalDragStart: (details) {
           _startPosition = details.globalPosition;
         },
@@ -107,7 +80,9 @@ class _RemoteGesturesPageState extends State<RemoteGesturesPage> {
           final distance = (_endPosition - _startPosition).distance;
           if (distance > _swipeThreshold) {
             final isUp = details.delta.dy < 0;
-            isUp ? _onSwipeUp() : _onSwipeDown();
+            isUp
+                ? _handleUpdateGesture(GestureType.swipeUp)
+                : _handleUpdateGesture(GestureType.swipeDown);
             _startPosition = _endPosition;
           }
         },
@@ -117,12 +92,14 @@ class _RemoteGesturesPageState extends State<RemoteGesturesPage> {
           if (distance > _swipeThreshold) {
             final velocity = details.primaryVelocity ?? 0;
             final isUp = velocity < 0;
-            isUp ? _onSwipeUpEnd() : _onSwipeDownEnd();
-            _startPosition = _endPosition;
+            isUp
+                ? _handleEndGesture(GestureType.swipeUp)
+                : _handleEndGesture(GestureType.swipeDown);
           }
+          _startPosition = _endPosition;
         },
 
-        // Left / Right gesture (Seeking)
+        //-----------/ Left / Right gesture /-----------//
         onHorizontalDragStart: (details) {
           _startPosition = details.globalPosition;
         },
@@ -131,21 +108,37 @@ class _RemoteGesturesPageState extends State<RemoteGesturesPage> {
           final distance = (_endPosition - _startPosition).distance;
           if (distance > _swipeThreshold) {
             final isLeft = details.delta.dx < 0;
-            isLeft ? _onSwipeLeft() : _onSwipeRight();
+            isLeft
+                ? _handleUpdateGesture(GestureType.swipeLeft)
+                : _handleUpdateGesture(GestureType.swipeRight);
             _startPosition = _endPosition;
           }
         },
         onHorizontalDragEnd: (details) {
           _endPosition = details.globalPosition;
-          // OPTIMIZE: move to drag update
-          final velocity = details.primaryVelocity ?? 0;
-          final isLeft = velocity < 0;
-          isLeft ? _onSwipeLeftEnd() : _onSwipeRightEnd();
+          final distance = (_endPosition - _startPosition).distance;
+          if (distance > _swipeThreshold) {
+            // OPTIMIZE: move to drag update
+            final velocity = details.primaryVelocity ?? 0;
+            final isLeft = velocity < 0;
+            isLeft
+                ? _handleEndGesture(GestureType.swipeLeft)
+                : _handleEndGesture(GestureType.swipeRight);
+          }
           _startPosition = _endPosition;
         },
 
-        // Pause / Play
-        onDoubleTap: _onDoubleTap,
+        //-----------/ Double Tap /-----------//
+        onDoubleTap: () {
+          _handleUpdateGesture(GestureType.doubleTap);
+          _handleEndGesture(GestureType.doubleTap);
+        },
+
+        //-----------/ Long Press (Hold) /-----------//
+        onLongPress: () {
+          _handleUpdateGesture(GestureType.longPress);
+          _handleEndGesture(GestureType.longPress);
+        },
       ),
     );
   }

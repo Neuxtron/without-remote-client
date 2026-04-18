@@ -14,4 +14,7 @@ class BlankAppBar extends AppBar {
 
   @override
   Color? get shadowColor => Colors.transparent;
+
+  @override
+  Color? get surfaceTintColor => Colors.transparent;
 }

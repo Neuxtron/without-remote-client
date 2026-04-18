@@ -25,19 +25,29 @@ class _HomePageState extends State<HomePage> {
       arguments: {
         "actions": <GestureType, GestureAction>{
           GestureType.swipeLeft: GestureAction(
-            onUpdate: _socketService.arrowLeft,
+            onUpdate: _socketService.onEmit(
+              AppConstants.socketEmit.arrowLeft,
+            ),
           ),
           GestureType.swipeRight: GestureAction(
-            onUpdate: _socketService.arrowRight,
+            onUpdate: _socketService.onEmit(
+              AppConstants.socketEmit.arrowRight,
+            ),
           ),
           GestureType.swipeUp: GestureAction(
-            onUpdate: _socketService.arrowUp,
+            onUpdate: _socketService.onEmit(
+              AppConstants.socketEmit.arrowUp,
+            ),
           ),
           GestureType.swipeDown: GestureAction(
-            onUpdate: _socketService.arrowDown,
+            onUpdate: _socketService.onEmit(
+              AppConstants.socketEmit.arrowDown,
+            ),
           ),
           GestureType.doubleTap: GestureAction(
-            onUpdate: _socketService.space,
+            onUpdate: _socketService.onEmit(
+              AppConstants.socketEmit.space,
+            ),
           ),
         },
       },
@@ -82,14 +92,18 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _RoundedButton(
-                onPressed: _socketService.arrowFastLeft,
+                onPressed: _socketService.onEmit(
+                  AppConstants.socketEmit.arrowFastLeft,
+                ),
                 icon: const Icon(
                   Icons.keyboard_double_arrow_left,
                   size: iconSize,
                 ),
               ),
               _RoundedButton(
-                onPressed: _socketService.arrowLeft,
+                onPressed: _socketService.onEmit(
+                  AppConstants.socketEmit.arrowLeft,
+                ),
                 icon: const Icon(
                   Icons.keyboard_arrow_left,
                   size: iconSize,
@@ -99,7 +113,9 @@ class _HomePageState extends State<HomePage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _RoundedButton(
-                    onPressed: _socketService.arrowUp,
+                    onPressed: _socketService.onEmit(
+                      AppConstants.socketEmit.arrowUp,
+                    ),
                     icon: const Icon(
                       Icons.keyboard_arrow_up,
                       size: iconSize,
@@ -116,7 +132,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   _RoundedButton(
-                    onPressed: _socketService.arrowDown,
+                    onPressed: _socketService.onEmit(
+                      AppConstants.socketEmit.arrowDown,
+                    ),
                     icon: const Icon(
                       Icons.keyboard_arrow_down,
                       size: iconSize,
@@ -125,14 +143,18 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               _RoundedButton(
-                onPressed: _socketService.arrowRight,
+                onPressed: _socketService.onEmit(
+                  AppConstants.socketEmit.arrowRight,
+                ),
                 icon: const Icon(
                   Icons.keyboard_arrow_right,
                   size: iconSize,
                 ),
               ),
               _RoundedButton(
-                onPressed: _socketService.arrowFastRight,
+                onPressed: _socketService.onEmit(
+                  AppConstants.socketEmit.arrowFastRight,
+                ),
                 icon: const Icon(
                   Icons.keyboard_double_arrow_right,
                   size: iconSize,
@@ -142,14 +164,18 @@ class _HomePageState extends State<HomePage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _RoundedButton(
-                    onPressed: _socketService.volUp,
+                    onPressed: _socketService.onEmit(
+                      AppConstants.socketEmit.volUp,
+                    ),
                     icon: const Icon(
                       Icons.volume_up,
                       size: iconSize,
                     ),
                   ),
                   _RoundedButton(
-                    onPressed: _socketService.volDown,
+                    onPressed: _socketService.onEmit(
+                      AppConstants.socketEmit.volDown,
+                    ),
                     icon: const Icon(
                       Icons.volume_down,
                       size: iconSize,
@@ -160,7 +186,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           MaterialButton(
-            onPressed: _socketService.space,
+            onPressed: _socketService.onEmit(AppConstants.socketEmit.space),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadiusGeometry.circular(999),
             ),
