@@ -6,7 +6,7 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:without_remote_client/core/utils/app_constants.dart';
 
 class SocketService {
-  late io.Socket socket;
+  io.Socket? _socket;
   BuildContext? context;
 
   void connect({String? ipAddress}) async {
@@ -16,10 +16,11 @@ class SocketService {
     final usedIp = ipAddress ?? storedIp;
     if (usedIp == null) return;
 
-    socket = io.io(
+    final socket = io.io(
       "http://$usedIp:3000",
       io.OptionBuilder().setTransports(["websocket"]).build(),
     );
+    _socket = socket;
     socket.connect();
 
     socket.onConnect((data) {
@@ -38,7 +39,7 @@ class SocketService {
   }
 
   void disconnect() {
-    socket.disconnect();
+    _socket?.disconnect();
   }
 
   VoidCallback onEmit(String emitKey) {
@@ -46,6 +47,6 @@ class SocketService {
   }
 
   void emit(String emitKey) {
-    socket.volatile.emit(emitKey);
+    _socket?.volatile.emit(emitKey);
   }
 }
