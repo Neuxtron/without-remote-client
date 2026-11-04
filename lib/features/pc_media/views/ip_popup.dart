@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:without_remote_client/core/services/socket_service.dart';
 import 'package:without_remote_client/core/utils/app_constants.dart';
+import 'package:without_remote_client/features/remote_gestures/view_models/socket_view_model.dart';
 
 class IpPopup extends StatefulWidget {
-  const IpPopup({super.key, required this.socketService});
-  final SocketService socketService;
+  const IpPopup({super.key});
 
   @override
   State<IpPopup> createState() => _IpPopupState();
@@ -36,8 +36,11 @@ class _IpPopupState extends State<IpPopup> {
         ),
       ),
     );
-    widget.socketService.disconnect();
-    widget.socketService.connect();
+
+    if (!mounted) return;
+    final socketVM = context.read<SocketViewModel>();
+    socketVM.disconnect();
+    socketVM.connect();
     navigator.pop();
   }
 

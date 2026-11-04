@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:without_remote_client/core/themes/app_colors.dart';
+import 'package:without_remote_client/features/remote_gestures/view_models/socket_view_model.dart';
 import 'package:without_remote_client/routes/app_routes.dart';
 
 void main() {
@@ -11,19 +13,24 @@ class WithoutRemoteApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Without Remote Client",
-      // TODO: theme
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.primary,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => SocketViewModel()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: "Without Remote Client",
+        // TODO: theme
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: AppColors.primary,
+          ),
+          scaffoldBackgroundColor: Colors.white,
         ),
-        scaffoldBackgroundColor: Colors.white,
+        initialRoute: "/",
+        routes: AppRoutes.routes,
       ),
-      initialRoute: "/",
-      routes: AppRoutes.routes,
     );
   }
 }

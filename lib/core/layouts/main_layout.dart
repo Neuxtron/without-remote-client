@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:without_remote_client/features/pc_media/view_models/pc_media_view_model.dart';
 import 'package:without_remote_client/features/pc_media/views/pc_media_page.dart';
 import 'package:without_remote_client/features/phone_media/views/phone_media_page.dart';
+import 'package:without_remote_client/features/remote_gestures/view_models/socket_view_model.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -25,6 +28,23 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _slidableController = SlidableController(this);
+    final socketVM = context.read<SocketViewModel>();
+
+    socketVM.initialize((_) {
+      final messenger = ScaffoldMessenger.of(context);
+      log("Connected to socket");
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Connected",
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    });
+    socketVM.connect();
   }
 
   @override

@@ -1,16 +1,11 @@
-import 'dart:developer';
-
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:without_remote_client/core/utils/app_constants.dart';
 
 class SocketService {
   io.Socket? _socket;
-  BuildContext? context;
 
-  void connect({String? ipAddress}) async {
-    final messenger = context != null ? ScaffoldMessenger.of(context!) : null;
+  void connect(String? ipAddress, dynamic Function(dynamic) onConnect) async {
     final prefs = await SharedPreferences.getInstance();
     final storedIp = prefs.getString(AppConstants.ipAddressKey);
     final usedIp = ipAddress ?? storedIp;
@@ -22,28 +17,11 @@ class SocketService {
     );
     _socket = socket;
     socket.connect();
-
-    socket.onConnect((data) {
-      log("Connected to socket");
-      messenger?.clearSnackBars();
-      messenger?.showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Connected",
-            textAlign: TextAlign.center,
-          ),
-          backgroundColor: Colors.green,
-        ),
-      );
-    });
+    socket.onConnect(onConnect);
   }
 
   void disconnect() {
     _socket?.disconnect();
-  }
-
-  VoidCallback onEmit(String emitKey) {
-    return () => emit(emitKey);
   }
 
   void emit(String emitKey) {

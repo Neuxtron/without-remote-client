@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:without_remote_client/core/services/socket_service.dart';
 import 'package:without_remote_client/core/themes/app_colors.dart';
 import 'package:without_remote_client/core/utils/app_constants.dart';
 import 'package:without_remote_client/features/remote_gestures/models/gesture_action.dart';
 import 'package:without_remote_client/features/remote_gestures/models/gesture_type.dart';
+import 'package:without_remote_client/features/remote_gestures/view_models/socket_view_model.dart';
 import 'package:without_remote_client/routes/app_routes.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,36 +17,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _socketService = SocketService();
-
   void _startGestures() {
+    final socketVM = context.read<SocketViewModel>();
     Navigator.pushNamed(
       context,
       AppRoutes.remoteGestures,
       arguments: {
         "actions": <GestureType, GestureAction>{
           GestureType.swipeLeft: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.arrowLeft,
             ),
           ),
           GestureType.swipeRight: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.arrowRight,
             ),
           ),
           GestureType.swipeUp: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.arrowUp,
             ),
           ),
           GestureType.swipeDown: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.arrowDown,
             ),
           ),
           GestureType.doubleTap: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.space,
             ),
           ),
@@ -55,17 +55,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _socketService.context = context;
-      _socketService.connect();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     const iconSize = 35.0;
+    final socketVM = context.read<SocketViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -75,9 +67,7 @@ class _HomePageState extends State<HomePage> {
               showDialog(
                 context: context,
                 builder: (context) {
-                  return _IpPopup(
-                    socketService: _socketService,
-                  );
+                  return const _IpPopup();
                 },
               );
             },
@@ -92,7 +82,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _RoundedButton(
-                onPressed: _socketService.onEmit(
+                onPressed: socketVM.onEmit(
                   AppConstants.socketEmit.arrowFastLeft,
                 ),
                 icon: const Icon(
@@ -101,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               _RoundedButton(
-                onPressed: _socketService.onEmit(
+                onPressed: socketVM.onEmit(
                   AppConstants.socketEmit.arrowLeft,
                 ),
                 icon: const Icon(
@@ -113,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _RoundedButton(
-                    onPressed: _socketService.onEmit(
+                    onPressed: socketVM.onEmit(
                       AppConstants.socketEmit.arrowUp,
                     ),
                     icon: const Icon(
@@ -132,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   _RoundedButton(
-                    onPressed: _socketService.onEmit(
+                    onPressed: socketVM.onEmit(
                       AppConstants.socketEmit.arrowDown,
                     ),
                     icon: const Icon(
@@ -143,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               _RoundedButton(
-                onPressed: _socketService.onEmit(
+                onPressed: socketVM.onEmit(
                   AppConstants.socketEmit.arrowRight,
                 ),
                 icon: const Icon(
@@ -152,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               _RoundedButton(
-                onPressed: _socketService.onEmit(
+                onPressed: socketVM.onEmit(
                   AppConstants.socketEmit.arrowFastRight,
                 ),
                 icon: const Icon(
@@ -164,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _RoundedButton(
-                    onPressed: _socketService.onEmit(
+                    onPressed: socketVM.onEmit(
                       AppConstants.socketEmit.volUp,
                     ),
                     icon: const Icon(
@@ -173,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   _RoundedButton(
-                    onPressed: _socketService.onEmit(
+                    onPressed: socketVM.onEmit(
                       AppConstants.socketEmit.volDown,
                     ),
                     icon: const Icon(
@@ -186,7 +176,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           MaterialButton(
-            onPressed: _socketService.onEmit(AppConstants.socketEmit.space),
+            onPressed: socketVM.onEmit(AppConstants.socketEmit.space),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadiusGeometry.circular(999),
             ),
@@ -228,8 +218,7 @@ class _RoundedButton extends StatelessWidget {
 }
 
 class _IpPopup extends StatefulWidget {
-  const _IpPopup({required this.socketService});
-  final SocketService socketService;
+  const _IpPopup();
 
   @override
   State<_IpPopup> createState() => _IpPopupState();
@@ -260,8 +249,11 @@ class _IpPopupState extends State<_IpPopup> {
         ),
       ),
     );
-    widget.socketService.disconnect();
-    widget.socketService.connect();
+
+    if (!mounted) return;
+    final socketVM = context.read<SocketViewModel>();
+    socketVM.disconnect();
+    socketVM.connect();
     navigator.pop();
   }
 

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:without_remote_client/core/services/socket_service.dart';
 import 'package:without_remote_client/core/themes/app_colors.dart';
 import 'package:without_remote_client/core/utils/app_constants.dart';
 import 'package:without_remote_client/features/pc_media/models/remote_mode.dart';
 import 'package:without_remote_client/features/pc_media/views/ip_popup.dart';
 import 'package:without_remote_client/features/remote_gestures/models/gesture_action.dart';
 import 'package:without_remote_client/features/remote_gestures/models/gesture_type.dart';
+import 'package:without_remote_client/features/remote_gestures/view_models/socket_view_model.dart';
 import 'package:without_remote_client/routes/app_routes.dart';
 import 'package:without_remote_client/shared/widget/blank_app_bar.dart';
 
@@ -20,9 +20,8 @@ class PcMediaPage extends StatefulWidget {
 }
 
 class _PcMediaPageState extends State<PcMediaPage> {
-  final _socketService = SocketService();
-
   void _startVideoGestures(BuildContext context) {
+    final socketVM = context.read<SocketViewModel>();
     Navigator.pushNamed(
       context,
       AppRoutes.remoteGestures,
@@ -30,27 +29,27 @@ class _PcMediaPageState extends State<PcMediaPage> {
       arguments: {
         "actions": <GestureType, GestureAction>{
           GestureType.swipeLeft: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.arrowLeft,
             ),
           ),
           GestureType.swipeRight: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.arrowRight,
             ),
           ),
           GestureType.swipeUp: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.arrowUp,
             ),
           ),
           GestureType.swipeDown: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.arrowDown,
             ),
           ),
           GestureType.doubleTap: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.space,
             ),
           ),
@@ -60,38 +59,39 @@ class _PcMediaPageState extends State<PcMediaPage> {
   }
 
   void _startFileGestures(BuildContext context) {
+    final socketVM = context.read<SocketViewModel>();
     Navigator.pushNamed(
       context,
       AppRoutes.remoteGestures,
       arguments: {
         "actions": <GestureType, GestureAction>{
           GestureType.swipeLeft: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.arrowLeft,
             ),
           ),
           GestureType.swipeRight: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.arrowRight,
             ),
           ),
           GestureType.swipeUp: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.arrowUp,
             ),
           ),
           GestureType.swipeDown: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.arrowDown,
             ),
           ),
           GestureType.doubleTap: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.returnKey,
             ),
           ),
           GestureType.longPress: GestureAction(
-            onUpdate: _socketService.onEmit(
+            onUpdate: socketVM.onEmit(
               AppConstants.socketEmit.back,
             ),
           ),
@@ -104,9 +104,7 @@ class _PcMediaPageState extends State<PcMediaPage> {
     showDialog(
       context: context,
       builder: (context) {
-        return IpPopup(
-          socketService: _socketService,
-        );
+        return const IpPopup();
       },
     );
   }
@@ -115,8 +113,7 @@ class _PcMediaPageState extends State<PcMediaPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _socketService.context = context;
-      _socketService.connect();
+      context.read<SocketViewModel>().connect();
     });
   }
 
